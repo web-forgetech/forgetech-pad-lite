@@ -2,7 +2,7 @@
 
 **A wireless Bluetooth Xbox-style controller built on an ESP32-C3. By ForgeTech, Lahore.**
 
-ForgeTech Pad Lite is a small game controller with **4 direction buttons, A, B and a Turbo (auto-fire) button**.
+ForgeTech Pad Lite is a small game controller with **4 direction buttons, A, B, X, Y and a Turbo (auto-fire) button**.
 The ESP32-C3 pretends to be an **Xbox Series X Wireless Controller** over Bluetooth Low Energy, so computers treat it
 like a real Xbox pad: no driver, no app. The main goal: **one controller that works on a Mac and in Windows running in
 Parallels at the same time.**
@@ -42,7 +42,7 @@ Parallels at the same time.**
 | Qty | Part | Notes |
 |---|---|---|
 | 1 | ESP32-C3-MINI-1 dev board | the version with CH340K USB-serial, RGB LED on GPIO8 |
-| 7 | Push buttons (tactile switch, e.g. 6×6 mm) | Up, Down, Left, Right, A, B, Turbo |
+| 9 | Push buttons (tactile switch, e.g. 6×6 mm) | Up, Down, Left, Right, A, B, X, Y, Turbo |
 | – | Hook-up wire | one wire per button + a shared GND wire |
 | 1 | USB cable | for flashing and power |
 
@@ -56,6 +56,8 @@ No resistors are needed: the ESP32's internal pull-up resistors are used.
 | Up / Down / Left / Right | **Left analog stick** pushed fully in that direction. Two buttons together = diagonal. Opposite buttons cancel out. |
 | A | Xbox **A** (with auto-fire, see below) |
 | B | Xbox **B** |
+| X | Xbox **X** |
+| Y | Xbox **Y** |
 | Turbo | Not sent to the computer: switches auto-fire on A on/off |
 
 ## Wiring
@@ -71,6 +73,8 @@ Every button has **two legs**: one leg goes to its **GPIO pin**, the other leg g
 | Right | GPIO4 | right header, pin 11 |
 | A | GPIO5 | right header, pin 10 |
 | B | GPIO6 | right header, pin 9 |
+| X | GPIO10 | left header, pin 11 |
+| Y | GPIO18 | right header, pin 13 (native USB D- pin, see note below) |
 | Turbo | GPIO7 | right header, pin 8 |
 | GND (all buttons) | GND | left pin 15 / right pin 15 (any GND works) |
 | Status LED | GPIO8 | onboard RGB LED, nothing to wire |
@@ -81,7 +85,8 @@ pin reads LOW = pressed.
 **Pins kept free on purpose:**
 - **GPIO2, GPIO8, GPIO9** are *strapping pins*: they decide how the chip boots. A button held on them during power-up can stop the board from starting normally.
 - **GPIO20, GPIO21** are used by the CH340K chip for USB upload and the Serial Monitor.
-- **GPIO10, GPIO18, GPIO19** are still free for extra buttons (see [Customising](#customising)).
+- **GPIO18** (used for Y) is the native USB D- pin. Using it as a button turns off the board's second USB port ("ESP32-C3 USB"). Upload and the Serial Monitor go through the **COM** (CH340K) port, which is not affected.
+- **GPIO19** is still free for one more button (see [Customising](#customising)).
 
 ## How it works
 ![Firmware main loop](docs/firmware-flow.png)
@@ -93,7 +98,7 @@ pin reads LOW = pressed.
 3. **Turbo button:** each press toggles auto-fire on or off.
 4. **Connected?** Until a computer connects, the LED blinks blue and nothing is sent.
 5. **Work out the controller state:**
-   - A and B become Xbox buttons 1 and 2. When auto-fire is ON, A follows the auto-fire rule below.
+   - A, B, X, Y become Xbox buttons 1–4 (the library maps them to Xbox A, B, X, Y). When auto-fire is ON, A follows the auto-fire rule below.
    - The direction buttons become the left stick: full value (±32767) on one axis, or 70.7 % on both axes for a diagonal, so the stick stays on a circle like a real thumbstick.
 6. **Send:** if anything changed since last time, one Bluetooth report is sent. If nothing changed, nothing is sent (saves battery and radio time).
 
@@ -112,7 +117,7 @@ not a real Xbox controller. Its firmware is changed only by flashing from Platfo
 | You release A (Turbo still ON) | Auto-fire **continues** |
 | Press Turbo again | Auto-fire **stops**, LED back to green |
 
-- Auto-fire works only on **A**. B and the stick are never auto-fired.
+- Auto-fire works only on **A**. B, X, Y and the stick are never auto-fired.
 - Auto-fire is always **OFF after a restart**.
 - Auto-fire only runs while a computer is connected.
 
@@ -162,7 +167,7 @@ Monitor says so**, so you can test before soldering anything. Several commands c
 | `status` | show firmware version, connection, auto-fire state, reports sent and what is pressed |
 | `help` | list the commands |
 
-Names: `a`, `b` (or `1`, `2`), `up`, `down`, `left`, `right`. Example: `press up; press right` = stick diagonally up-right.
+Names: `a`, `b`, `x`, `y` (or `1`–`4`), `up`, `down`, `left`, `right`. Example: `press up; press right` = stick diagonally up-right.
 
 ## Customising
 All settings are near the top of the two source files:
@@ -174,10 +179,10 @@ All settings are near the top of the two source files:
 | Bluetooth name | `DEVICE_NAME` in `src/main.cpp` | `ForgeTech Pad Lite` |
 | Button pins | `include/pins.h` | see [Wiring](#wiring) |
 
-**Adding X / Y (or more buttons):** wire the new button to a free pin (GPIO10, GPIO18 or GPIO19), add it to
+**Adding more buttons (e.g. Start, LB, RB):** wire the new button to the last free pin, **GPIO19**, add it to
 `pins.h` and to the `inputs[]` list in `main.cpp`, then press/release it in `sendState()`.
-In this library's Xbox mode, `BUTTON_3` = X and `BUTTON_4` = Y.
-Note: using GPIO18/19 disables the board's second USB port ("ESP32-C3 USB"); upload through the COM port still works.
+In this library's Xbox mode, `BUTTON_5` = LB, `BUTTON_6` = RB, `BUTTON_9` = View/Select, `BUTTON_10` = Menu/Start.
+Note: GPIO19 is the native USB D+ pin (like GPIO18 used for Y), so the board's second USB port ("ESP32-C3 USB") is already out of use; upload through the COM port still works.
 
 ## Troubleshooting
 | Problem | Fix |
@@ -187,7 +192,7 @@ Note: using GPIO18/19 disables the board's second USB port ("ESP32-C3 USB"); upl
 | Mac says "firmware out of date" | Harmless. Forget the device and pair again so the Mac reads the new version. Do not try to update it. |
 | A button does nothing | Check that its second leg goes to GND. Use `status` in the Serial Monitor while pressing it. |
 | Board does not start / stuck in flashing mode | Make sure nothing is wired to GPIO2, GPIO8 or GPIO9. |
-| Auto-fire not working | 1) Flash the latest firmware: the Serial Monitor must show `firmware 1.3` (or newer) at start-up (older versions only fired while A was held). 2) LED must be **orange**. 3) Type `status` twice a second apart: `reports-sent` should climb by about 20 per second while auto-fire runs. 4) Watch button A in `joy.cpl` (Windows): it should blink. |
+| Auto-fire not working | 1) Flash the latest firmware: the Serial Monitor must show `firmware 1.4` (or newer) at start-up (older versions only fired while A was held). 2) LED must be **orange**. 3) Type `status` twice a second apart: `reports-sent` should climb by about 20 per second while auto-fire runs. 4) Watch button A in `joy.cpl` (Windows): it should blink. |
 | Upload fails | Use the **COM** USB port; close the Serial Monitor before uploading. |
 
 ## Project files

@@ -70,13 +70,13 @@ for (cx, cy, lab, gp) in [(190, 125, "Up", "GPIO0"), (190, 235, "Down", "GPIO1")
     b += f'<g class="teal"><circle cx="{cx}" cy="{cy}" r="25" stroke-width="0.8"/><text class="th" x="{cx}" y="{cy-5}" text-anchor="middle" dominant-baseline="central">{lab}</text><text class="ts" x="{cx}" y="{cy+11}" text-anchor="middle" dominant-baseline="central">{gp}</text></g>'
 b += '<text class="ts" x="190" y="184" text-anchor="middle">left stick</text>'
 # action buttons
-b += '<g class="purple"><circle cx="560" cy="150" r="28" stroke-width="0.8"/><text class="th" x="560" y="145" text-anchor="middle" dominant-baseline="central">B</text><text class="ts" x="560" y="162" text-anchor="middle" dominant-baseline="central">GPIO6</text></g>'
-b += '<g class="purple"><circle cx="495" cy="205" r="28" stroke-width="0.8"/><text class="th" x="495" y="200" text-anchor="middle" dominant-baseline="central">A</text><text class="ts" x="495" y="217" text-anchor="middle" dominant-baseline="central">GPIO5</text></g>'
+for (cx, cy, lab, gp) in [(510, 125, "Y", "GPIO18"), (510, 235, "A", "GPIO5"), (455, 180, "X", "GPIO10"), (565, 180, "B", "GPIO6")]:
+    b += f'<g class="purple"><circle cx="{cx}" cy="{cy}" r="25" stroke-width="0.8"/><text class="th" x="{cx}" y="{cy-5}" text-anchor="middle" dominant-baseline="central">{lab}</text><text class="ts" x="{cx}" y="{cy+11}" text-anchor="middle" dominant-baseline="central">{gp}</text></g>'
 # turbo + LED
 b += '<g class="coral"><rect x="300" y="205" width="80" height="34" rx="17" stroke-width="0.8"/><text class="th" x="340" y="217" text-anchor="middle" dominant-baseline="central">Turbo</text><text class="ts" x="340" y="231" text-anchor="middle" dominant-baseline="central">GPIO7</text></g>'
 b += '<circle cx="340" cy="130" r="9" fill="#97C459" stroke="#3B6D11" stroke-width="0.8"/>'
 b += '<text class="ts" x="340" y="160" text-anchor="middle">Status LED (GPIO8)</text>'
-b += ('<text class="ts" x="340" y="330" text-anchor="middle">Direction buttons push the Xbox left stick fully (two at once = diagonal). A and B are Xbox A and B.</text>'
+b += ('<text class="ts" x="340" y="330" text-anchor="middle">Direction buttons push the Xbox left stick fully (two at once = diagonal). A, B, X, Y are the Xbox face buttons.</text>'
       '<text class="ts" x="340" y="348" text-anchor="middle">Turbo turns auto-fire on A on/off. All buttons connect between their GPIO and GND.</text>')
 svg("layout", 680, 368, "Controller layout (top view)", b)
 

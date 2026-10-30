@@ -1,4 +1,4 @@
-// ForgeTech Pad Lite - ESP32-C3 BLE Xbox controller: A/B + D-pad + auto-fire (turbo)
+// ForgeTech Pad Lite - ESP32-C3 BLE Xbox controller: A/B/X/Y + left stick + auto-fire (turbo) on A
 // Emulates an Xbox Series X Wireless Controller (XInput, VID 0x045E / PID 0x0B13), so it works on
 // macOS (Game Controller framework), Windows, and Windows in Parallels (shared as "Virtual Xbox Controller").
 // Each input = physical button OR serial command (see README.md)
@@ -7,7 +7,7 @@
 #include "pins.h"
 
 #define DEVICE_NAME "ForgeTech Pad Lite"
-#define FW_VERSION  "1.3"   // 1.3 = ForgeTech branding (BT name "ForgeTech Pad Lite"); 1.2 = self-firing auto-fire
+#define FW_VERSION  "1.4"   // 1.4 = X/Y buttons; 1.3 = ForgeTech branding; 1.2 = self-firing auto-fire
 BleGamepad gamepad(DEVICE_NAME, "ForgeTech", 100);
 
 const uint8_t  DEBOUNCE_MS     = 20;
@@ -25,15 +25,15 @@ struct Debounced {
   }
 };
 
-// 2 buttons + 4 d-pad directions. held/tapUntil are set from Serial.
+// 4 face buttons + 4 direction buttons. held/tapUntil are set from Serial.
 struct Input { Debounced btn; const char* name; bool held; uint32_t tapUntil; bool state; };
 Input inputs[] = {
-  {{PIN_BTN_A}, "a"}, {{PIN_BTN_B}, "b"},
+  {{PIN_BTN_A}, "a"}, {{PIN_BTN_B}, "b"}, {{PIN_BTN_X}, "x"}, {{PIN_BTN_Y}, "y"},
   {{PIN_UP}, "up"}, {{PIN_DOWN}, "down"}, {{PIN_LEFT}, "left"}, {{PIN_RIGHT}, "right"},
 };
 const uint8_t NUM_IN = sizeof(inputs) / sizeof(inputs[0]);
-const uint8_t NUM_BTN = 2;   // first 2 inputs are buttons (BUTTON_1 = Xbox A, BUTTON_2 = Xbox B)
-enum { A = 0, B, UP, DOWN, LEFT, RIGHT };
+const uint8_t NUM_BTN = 4;   // first 4 inputs are buttons: BUTTON_1..4 = Xbox A, B, X, Y
+enum { A = 0, B, X, Y, UP, DOWN, LEFT, RIGHT };
 
 Debounced turboBtn = {PIN_TURBO};
 bool turbo = false;
@@ -43,7 +43,7 @@ bool isPressed(const Input& in) {
   return in.btn.stable || in.held || (int32_t)(in.tapUntil - millis()) > 0;
 }
 
-// Input by name (a, up...) or button number (1-2); -1 if unknown
+// Input by name (a, up...) or button number (1-4); -1 if unknown
 int findInput(const char* s) {
   if (!s) return -1;
   for (uint8_t i = 0; i < NUM_IN; i++) if (!strcasecmp(s, inputs[i].name)) return i;
@@ -86,6 +86,8 @@ void stickXY(int16_t& x, int16_t& y) {
 void sendState() {
   inputs[A].state ? gamepad.press(BUTTON_1) : gamepad.release(BUTTON_1);   // Xbox A
   inputs[B].state ? gamepad.press(BUTTON_2) : gamepad.release(BUTTON_2);   // Xbox B
+  inputs[X].state ? gamepad.press(BUTTON_3) : gamepad.release(BUTTON_3);   // Xbox X
+  inputs[Y].state ? gamepad.press(BUTTON_4) : gamepad.release(BUTTON_4);   // Xbox Y
   int16_t x, y;
   stickXY(x, y);
   gamepad.setLeftThumb(x, y);
@@ -103,7 +105,7 @@ void printHelp() {
     "  turbo [on|off]       auto-fire: A fires by itself; hold A = steady hold (no argument = toggle)\n"
     "  reset                release everything\n"
     "  status               show what is pressed\n"
-    "  names: a b (or 1-2), up down left right\n"
+    "  names: a b x y (or 1-4), up down left right\n"
     "  example: turbo on   (then: press a / release a)"));
 }
 
