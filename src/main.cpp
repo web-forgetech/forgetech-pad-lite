@@ -7,6 +7,7 @@
 #include "pins.h"
 
 #define DEVICE_NAME "Forgetech Pad Lite"
+#define FW_VERSION  "1.2"   // 1.2 = auto-fire fires A by itself; holding A = steady hold
 BleGamepad gamepad(DEVICE_NAME, "Forgetech", 100);
 
 const uint8_t  DEBOUNCE_MS     = 20;
@@ -52,8 +53,11 @@ int findInput(const char* s) {
 
 void setTurbo(bool on) {
   turbo = on;
-  Serial.printf("auto-fire %s\n", on ? "ON" : "OFF");
+  Serial.printf("auto-fire %s%s\n", on ? "ON" : "OFF",
+                on && !gamepad.isConnected() ? " (starts firing once a computer is connected)" : "");
 }
+
+uint32_t reportsSent = 0;   // shown by 'status' - should climb ~20/s while auto-fire is running
 
 // RGB status: blue blink = waiting to pair, green = connected, orange = connected + auto-fire on A
 void statusLed(bool connected) {
@@ -87,6 +91,7 @@ void sendState() {
   gamepad.setLeftThumb(x, y);
   gamepad.setHat1(HAT_CENTERED);     // Xbox D-pad not used
   gamepad.sendReport();
+  reportsSent++;
 }
 
 void printHelp() {
@@ -103,7 +108,8 @@ void printHelp() {
 }
 
 void printStatus() {
-  Serial.printf("connected=%s  auto-fire=%s  pressed:", gamepad.isConnected() ? "yes" : "no", turbo ? "on" : "off");
+  Serial.printf("fw=%s  connected=%s  auto-fire=%s  reports-sent=%lu  pressed:", FW_VERSION,
+                gamepad.isConnected() ? "yes" : "no", turbo ? "on" : "off", (unsigned long)reportsSent);
   for (uint8_t i = 0; i < NUM_IN; i++) if (isPressed(inputs[i])) Serial.printf(" %s", inputs[i].name);
   Serial.println();
 }
@@ -168,7 +174,7 @@ void setup() {
   // macOS show "firmware out of date"). The ESP32 itself is NOT updated by this.
   cfg.setFirmwareRevision("5.23.5.0");
   gamepad.begin(&cfg);
-  Serial.println("BLE Xbox controller started - pair as '" DEVICE_NAME "'");
+  Serial.println("Forgetech Pad Lite firmware " FW_VERSION " - BLE Xbox controller, pair as '" DEVICE_NAME "'");
   printHelp();
 }
 

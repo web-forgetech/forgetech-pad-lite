@@ -159,7 +159,7 @@ Monitor says so**, so you can test before soldering anything. Several commands c
 | `press a` / `release a` | hold / let go |
 | `turbo`, `turbo on`, `turbo off` | toggle / set auto-fire |
 | `reset` | release everything |
-| `status` | show connection, auto-fire state and what is pressed |
+| `status` | show firmware version, connection, auto-fire state, reports sent and what is pressed |
 | `help` | list the commands |
 
 Names: `a`, `b` (or `1`, `2`), `up`, `down`, `left`, `right`. Example: `press up; press right` = stick diagonally up-right.
@@ -187,7 +187,7 @@ Note: using GPIO18/19 disables the board's second USB port ("ESP32-C3 USB"); upl
 | Mac says "firmware out of date" | Harmless. Forget the device and pair again so the Mac reads the new version. Do not try to update it. |
 | A button does nothing | Check that its second leg goes to GND. Use `status` in the Serial Monitor while pressing it. |
 | Board does not start / stuck in flashing mode | Make sure nothing is wired to GPIO2, GPIO8 or GPIO9. |
-| Auto-fire not working | It only runs while connected (LED orange). Press Turbo once. |
+| Auto-fire not working | 1) Flash the latest firmware: the Serial Monitor must show `firmware 1.2` at start-up (older versions only fired while A was held). 2) LED must be **orange**. 3) Type `status` twice a second apart: `reports-sent` should climb by about 20 per second while auto-fire runs. 4) Watch button A in `joy.cpl` (Windows): it should blink. |
 | Upload fails | Use the **COM** USB port; close the Serial Monitor before uploading. |
 
 ## Project files
