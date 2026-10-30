@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="540" viewBox="0 0 680 540" role="img">
-<title>Forgetech Pad Lite button pinout (ESP32-C3)</title>
+<title>ForgeTech Pad Lite button pinout (ESP32-C3)</title>
 <style>
 text{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
 .t{font-size:14px;fill:#2C2C2A}.ts{font-size:12px;fill:#5F5E5A}.th{font-size:14px;font-weight:600;fill:#2C2C2A}
@@ -8,7 +8,7 @@ text{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
 .coral rect{fill:#FAECE7;stroke:#993C1D}.coral .th{fill:#712B13}.coral .ts{fill:#993C1D}
 </style>
 <rect width="680" height="540" fill="#FFFFFF"/>
-<text class="th" x="340" y="22" text-anchor="middle">Forgetech Pad Lite: button pinout</text>
+<text class="th" x="340" y="22" text-anchor="middle">ForgeTech Pad Lite: button pinout</text>
 <g transform="translate(0,20)">
 <rect x="250" y="30" width="180" height="402" rx="10" fill="#F1EFE8" stroke="#444441" stroke-width="1"/>
 <text class="th" x="340" y="52" text-anchor="middle">ESP32-C3 board</text>

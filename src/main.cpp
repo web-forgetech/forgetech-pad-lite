@@ -1,4 +1,4 @@
-// Forgetech Pad Lite - ESP32-C3 BLE Xbox controller: A/B + D-pad + auto-fire (turbo)
+// ForgeTech Pad Lite - ESP32-C3 BLE Xbox controller: A/B + D-pad + auto-fire (turbo)
 // Emulates an Xbox Series X Wireless Controller (XInput, VID 0x045E / PID 0x0B13), so it works on
 // macOS (Game Controller framework), Windows, and Windows in Parallels (shared as "Virtual Xbox Controller").
 // Each input = physical button OR serial command (see README.md)
@@ -6,9 +6,9 @@
 #include <BleGamepad.h>
 #include "pins.h"
 
-#define DEVICE_NAME "Forgetech Pad Lite"
-#define FW_VERSION  "1.2"   // 1.2 = auto-fire fires A by itself; holding A = steady hold
-BleGamepad gamepad(DEVICE_NAME, "Forgetech", 100);
+#define DEVICE_NAME "ForgeTech Pad Lite"
+#define FW_VERSION  "1.3"   // 1.3 = ForgeTech branding (BT name "ForgeTech Pad Lite"); 1.2 = self-firing auto-fire
+BleGamepad gamepad(DEVICE_NAME, "ForgeTech", 100);
 
 const uint8_t  DEBOUNCE_MS     = 20;
 const uint16_t TAP_MS          = 150;
@@ -174,7 +174,7 @@ void setup() {
   // macOS show "firmware out of date"). The ESP32 itself is NOT updated by this.
   cfg.setFirmwareRevision("5.23.5.0");
   gamepad.begin(&cfg);
-  Serial.println("Forgetech Pad Lite firmware " FW_VERSION " - BLE Xbox controller, pair as '" DEVICE_NAME "'");
+  Serial.println("ForgeTech Pad Lite firmware " FW_VERSION " - BLE Xbox controller, pair as '" DEVICE_NAME "'");
   printHelp();
 }
 

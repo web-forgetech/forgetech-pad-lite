@@ -1,8 +1,8 @@
-# Forgetech Pad Lite
+# ForgeTech Pad Lite
 
-**A wireless Bluetooth Xbox-style controller built on an ESP32-C3. By Forgetech, Lahore.**
+**A wireless Bluetooth Xbox-style controller built on an ESP32-C3. By ForgeTech, Lahore.**
 
-Forgetech Pad Lite is a small game controller with **4 direction buttons, A, B and a Turbo (auto-fire) button**.
+ForgeTech Pad Lite is a small game controller with **4 direction buttons, A, B and a Turbo (auto-fire) button**.
 The ESP32-C3 pretends to be an **Xbox Series X Wireless Controller** over Bluetooth Low Energy, so computers treat it
 like a real Xbox pad: no driver, no app. The main goal: **one controller that works on a Mac and in Windows running in
 Parallels at the same time.**
@@ -86,7 +86,7 @@ pin reads LOW = pressed.
 ## How it works
 ![Firmware main loop](docs/firmware-flow.png)
 
-1. **Start-up:** all button pins get their pull-ups switched on. Bluetooth starts and advertises as **"Forgetech Pad Lite"**
+1. **Start-up:** all button pins get their pull-ups switched on. Bluetooth starts and advertises as **"ForgeTech Pad Lite"**
    using the Xbox Series X profile (Microsoft's VID `0x045E` / PID `0x0B13`). That ID is why macOS and Windows load their
    built-in Xbox support.
 2. **Read buttons:** every 5 ms each pin is read. A change only counts once the pin has been stable for 20 ms (debounce).
@@ -137,8 +137,8 @@ pio device monitor       # open the Serial Monitor (115200 baud)
 
 ## Pairing (Mac + Parallels)
 1. Flash the board. The LED starts **blinking blue**.
-2. On the **Mac**: System Settings → Bluetooth → connect **Forgetech Pad Lite**. The LED turns **green**.
-   *(If an older "Forgetech Pad Lite" or "Forgetech Pad Keys" is listed, click ⓘ → **Forget This Device** first.
+2. On the **Mac**: System Settings → Bluetooth → connect **ForgeTech Pad Lite**. The LED turns **green**.
+   *(If an older "Forgetech Pad Lite" or "Forgetech Pad Keys" (old spelling) is listed, click ⓘ → **Forget This Device** first.
    Older firmware versions used a different controller type and macOS may remember it.)*
 3. Start **Windows in Parallels**. Do **not** pair from inside Windows.
 4. In Windows, open **Control Panel → Devices and Printers**: it appears as **Virtual Xbox Controller**.
@@ -171,7 +171,7 @@ All settings are near the top of the two source files:
 |---|---|---|
 | Auto-fire speed | `TURBO_PERIOD_MS` in `src/main.cpp` | `100` → 10 shots/s (`66` ≈ 15/s, `50` = 20/s) |
 | Debounce time | `DEBOUNCE_MS` in `src/main.cpp` | `20` ms |
-| Bluetooth name | `DEVICE_NAME` in `src/main.cpp` | `Forgetech Pad Lite` |
+| Bluetooth name | `DEVICE_NAME` in `src/main.cpp` | `ForgeTech Pad Lite` |
 | Button pins | `include/pins.h` | see [Wiring](#wiring) |
 
 **Adding X / Y (or more buttons):** wire the new button to a free pin (GPIO10, GPIO18 or GPIO19), add it to
@@ -187,7 +187,7 @@ Note: using GPIO18/19 disables the board's second USB port ("ESP32-C3 USB"); upl
 | Mac says "firmware out of date" | Harmless. Forget the device and pair again so the Mac reads the new version. Do not try to update it. |
 | A button does nothing | Check that its second leg goes to GND. Use `status` in the Serial Monitor while pressing it. |
 | Board does not start / stuck in flashing mode | Make sure nothing is wired to GPIO2, GPIO8 or GPIO9. |
-| Auto-fire not working | 1) Flash the latest firmware: the Serial Monitor must show `firmware 1.2` at start-up (older versions only fired while A was held). 2) LED must be **orange**. 3) Type `status` twice a second apart: `reports-sent` should climb by about 20 per second while auto-fire runs. 4) Watch button A in `joy.cpl` (Windows): it should blink. |
+| Auto-fire not working | 1) Flash the latest firmware: the Serial Monitor must show `firmware 1.3` (or newer) at start-up (older versions only fired while A was held). 2) LED must be **orange**. 3) Type `status` twice a second apart: `reports-sent` should climb by about 20 per second while auto-fire runs. 4) Watch button A in `joy.cpl` (Windows): it should blink. |
 | Upload fails | Use the **COM** USB port; close the Serial Monitor before uploading. |
 
 ## Project files
@@ -201,4 +201,4 @@ forgetech-pad-lite/
 ```
 
 ---
-© Forgetech, Lahore, Pakistan.
+© ForgeTech, Lahore, Pakistan.

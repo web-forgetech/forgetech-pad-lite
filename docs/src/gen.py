@@ -1,4 +1,4 @@
-"""Generates the README diagrams (SVG) for Forgetech Pad Lite.
+"""Generates the README diagrams (SVG) for ForgeTech Pad Lite.
 Run:  python docs/src/gen.py   then render PNGs with docs/src/render.js
 """
 import os
@@ -49,7 +49,7 @@ def arrow(x1, y1, x2, y2):
 # ---------------------------------------------------------------- 1. system overview
 b = ""
 xs = [20, 190, 360, 530]
-b += box("coral", xs[0], 60, 140, 72, "Forgetech Pad", "ESP32-C3", "Xbox Series X mode")
+b += box("coral", xs[0], 60, 140, 72, "ForgeTech Pad", "ESP32-C3", "Xbox Series X mode")
 b += box("blue", xs[1], 60, 140, 72, "Mac", "pair here", "(Bluetooth settings)")
 b += box("gray", xs[2], 60, 140, 72, "Parallels", "shares controller", "with Windows")
 b += box("teal", xs[3], 60, 140, 72, "Windows game", "sees a Virtual", "Xbox Controller")
@@ -64,7 +64,7 @@ svg("system", 690, 316, "How the controller reaches macOS and Windows", b)
 
 # ---------------------------------------------------------------- 2. controller layout
 b = '<rect x="60" y="50" width="560" height="250" rx="70" fill="#F1EFE8" stroke="#444441" stroke-width="1.2"/>'
-b += '<text class="th" x="340" y="82" text-anchor="middle">Forgetech Pad Lite</text>'
+b += '<text class="th" x="340" y="82" text-anchor="middle">ForgeTech Pad Lite</text>'
 # direction cluster
 for (cx, cy, lab, gp) in [(190, 125, "Up", "GPIO0"), (190, 235, "Down", "GPIO1"), (135, 180, "Left", "GPIO3"), (245, 180, "Right", "GPIO4")]:
     b += f'<g class="teal"><circle cx="{cx}" cy="{cy}" r="25" stroke-width="0.8"/><text class="th" x="{cx}" y="{cy-5}" text-anchor="middle" dominant-baseline="central">{lab}</text><text class="ts" x="{cx}" y="{cy+11}" text-anchor="middle" dominant-baseline="central">{gp}</text></g>'
