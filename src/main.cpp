@@ -11,7 +11,7 @@ BleGamepad gamepad(DEVICE_NAME, "Forgetech", 100);
 
 const uint8_t  DEBOUNCE_MS     = 20;
 const uint16_t TAP_MS          = 150;
-const uint16_t TURBO_PERIOD_MS = 100;   // auto-fire (A only): 10 shots per second (50 ms on / 50 ms off)
+const uint16_t TURBO_PERIOD_MS = 100;   // auto-fire on A: 10 shots per second (50 ms on / 50 ms off)
 
 // Active-low button (pin to GND, internal pull-up) with debounce
 struct Debounced {
@@ -95,11 +95,11 @@ void printHelp() {
     "  <name> [ms]          tap, e.g. 'a' or 'up 500' (default 150 ms)\n"
     "  press <name>         hold\n"
     "  release <name>       let go\n"
-    "  turbo [on|off]       auto-fire for a only (no argument = toggle)\n"
+    "  turbo [on|off]       auto-fire: A fires by itself; hold A = steady hold (no argument = toggle)\n"
     "  reset                release everything\n"
     "  status               show what is pressed\n"
     "  names: a b (or 1-2), up down left right\n"
-    "  example: turbo on; press a"));
+    "  example: turbo on   (then: press a / release a)"));
 }
 
 void printStatus() {
@@ -188,12 +188,14 @@ void loop() {
   bool changed = !wasConnected;   // send a full report right after (re)connecting
   wasConnected = true;
 
-  // Auto-fire: a held A is reported pressed only in the first half of each period
+  // Auto-fire ON: A fires by itself (pressed in the first half of each period), no need to hold it.
+  // If the user presses and holds A, auto-fire pauses and A is held steadily until released;
+  // after release, auto-fire continues until the turbo button turns it off.
   bool firePhase = (millis() % TURBO_PERIOD_MS) < TURBO_PERIOD_MS / 2;
 
   for (uint8_t i = 0; i < NUM_IN; i++) {
     bool p = isPressed(inputs[i]);
-    if (turbo && i == A && p) p = firePhase;
+    if (turbo && i == A && !p) p = firePhase;
     if (p != inputs[i].state) { inputs[i].state = p; changed = true; }
   }
 

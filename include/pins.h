@@ -13,7 +13,7 @@
 #define PIN_RIGHT   4
 
 // Turbo button: GPIO7 -> GND (not a strapping pin, safe at boot)
-//   each press = auto-fire on/off (A only)
+//   each press = auto-fire on/off (A fires by itself; holding A = steady hold)
 #define PIN_TURBO   7
 
 // Onboard WS2812 RGB LED

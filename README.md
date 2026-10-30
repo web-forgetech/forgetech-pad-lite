@@ -14,7 +14,7 @@ It emulates an **Xbox Series X Wireless Controller** (XInput, VID `0x045E` / PID
 
 | Button | Xbox input |
 |---|---|
-| A | A (auto-fire works) |
+| A | A (auto-fire: fires by itself while turbo is ON) |
 | B | B |
 | Direction buttons (Up/Down/Left/Right) | **Left analog stick**, full tilt (diagonals at 70.7 % per axis, opposite directions cancel) |
 
@@ -36,7 +36,10 @@ GPIO10, GPIO18 and GPIO19 are still free for future inputs (e.g. X / Y / Start).
 
 ## Auto-fire (turbo)
 - Press the turbo button: auto-fire **ON** (LED orange). Press again: **OFF** (LED green).
-- Works **only on A**: while ON, holding A repeats it at **10 shots/second** (50 ms pressed / 50 ms released).
+- Works **only on A**. While ON, A **fires by itself** at **10 shots/second** (50 ms pressed / 50 ms released) — no need to touch A.
+- **Press and hold A** while auto-fire is ON: auto-firing pauses and A is **held steadily** for as long as you hold it.
+  Release A and auto-firing continues.
+- Auto-fire stops only when you press the turbo button again (LED back to green) or the controller disconnects.
 - Speed is set by `TURBO_PERIOD_MS` in `src/main.cpp` (100 = 10/s, 66 ≈ 15/s, 50 = 20/s).
 - Auto-fire is OFF after every restart.
 
