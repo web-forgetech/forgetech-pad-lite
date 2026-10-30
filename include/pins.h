@@ -1,0 +1,20 @@
+#pragma once
+// ESP32-C3-MINI-1 dev board (CH340K COM port, RGB LED on GPIO8)
+// All inputs: wire to GND, internal pull-ups used
+
+// Buttons (GPIO10 is free)
+#define PIN_BTN_A   5
+#define PIN_BTN_B   6
+
+// Direction buttons (reported as the Xbox LEFT analog stick)
+#define PIN_UP      0
+#define PIN_DOWN    1
+#define PIN_LEFT    3
+#define PIN_RIGHT   4
+
+// Turbo button: GPIO7 -> GND (not a strapping pin, safe at boot)
+//   each press = auto-fire on/off (A only)
+#define PIN_TURBO   7
+
+// Onboard WS2812 RGB LED
+#define PIN_RGB     8
